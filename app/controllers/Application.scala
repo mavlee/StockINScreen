@@ -63,8 +63,13 @@ object Application extends Controller {
 
 
   // invert map of companies people have worked for to map of people who have worked for companies
+
   def getPossibleStocks(peoples : Map[String, List[(String, String)]]):Map[String, (String, List[String])] = {
-    null
+    var CompanyToPeople = Map[(String,String),List[String]]()
+    peoples.map{i=> i._2.foreach{j=>if(!(CompanyToPeople contains j)) CompanyToPeople(j)=List[String](); CompanyToPeople(j)=CompanyToPeople(j)++List(i._1);}}
+    var companies = Map[String,(String,List[String])]()
+    CompanyToPeople.map{i=>companies+=((i._1._1,(i._1._2,i._2)))}
+    companies
   }
 
   def getPositions(positions: Any):List[(String, String, List[Int])] = {
