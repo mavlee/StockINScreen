@@ -70,6 +70,21 @@ object Application extends Controller {
     }
   }
 
+  // ticker -> Name, Symbol, Price, Market Cap, P/E, Div
+  def getStockData(ticker: String) : (String, String, Double, Double, Double, Double) = {
+    null
+  }  
+
+
+
+  // invert map of companies people have worked for to map of people who have worked for companies
+  def getPossibleStocks(peoples : Map[String, List[(String, String)]]):Map[String, (String, List[String])] = {
+    null
+  }
+
+
+
+
   def sampleFromList[A](xs : Array[A], n : Int):Array[A] = {
     val len = xs.length
     import java.util.Random
