@@ -49,8 +49,10 @@ object Application extends Controller {
         connections.values = (myProfile :: connections.values.toList).toArray
         val friendsFutures = connections.values.map{ friend => future{
           val theirStocks = getPositions(friend.positions)
+
         }}
-        Ok(views.html.index.render(myProfile, friendsScores))
+        val map = Map.empty[String, (String, Double, Double, Double, Double, List[String])]
+        Ok(views.html.index.render(myProfile, map))
       }
       case _ =>{
         Logger.info("Redirecting to auth page")
