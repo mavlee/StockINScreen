@@ -48,9 +48,12 @@ object Application extends Controller {
         connections.values = (myProfile :: connections.values.toList).toArray
         connections.values.map{ friend => 
           val theirStocks = getPositions(friend.positions)
-          theirStocks
+          val tickers = theirStocks.map(_._2)
+          val stockInfo = tickers.map(getStockData(_))
+          stockInfo
         }
-        val map = Map.empty[String, (String, Double, Double, Double, Double, List[String])]
+        // Map(ticker, (company name, industry, price, mrktCap, p/e, div, Connections)
+        val map = Map.empty[String, (String, String, Double, Double, Double, Double, List[String])]
         Ok(views.html.index.render(myProfile, List.empty[(String, String, Double, List[(String, String, Double, Double, Double)])]))
       }
       case _ =>{
@@ -172,15 +175,16 @@ object Application extends Controller {
 
   // ticker -> Name, Symbol, Price, Market Cap, P/E, Div
   def getStockData(ticker: String) : (String, String, Double, Double, Double, Double) = {
-    import scala.collection.JavaConversions._
-    val url = "http://finance.yahoo.com/d/quotes.csv?s=%s&f=soj1rdn".format(ticker)
-    val connection = new URL(url).openConnection
-    val lines = Source.fromInputStream(connection.getInputStream).getLines.next
-    val fields = lines.split(",")
-    println(fields.toList)
-    println(fields(2))
-    val mrktCap = (if (fields(2).endsWith("B")) 1000 else 1) * fields(2).substring(0, fields(2).length-1).toDouble
-    (fields(5).mkString, fields(0).mkString, fields(1).toDouble, mrktCap, fields(3).toDouble, fields(4).toDouble)
+    try {
+      import scala.collection.JavaConversions._
+      val url = "http://finance.yahoo.com/d/quotes.csv?s=%s&f=soj1rdn".format(ticker)
+      val connection = new URL(url).openConnection
+      val lines = Source.fromInputStream(connection.getInputStream).getLines.next
+      val fields = lines.split(",")
+      val mrktCap = (if (fields(2).endsWith("B")) 1000 else 1) * fields(2).substring(0, fields(2).length-1).toDouble
+      (fields(5).mkString, fields(0).mkString, fields(1).toDouble, mrktCap, fields(3).toDouble, fields(4).toDouble)
+    } catch {
+      case e: Exception => ("", "", 0.0, 0.0, 0.0, 0.0)
+    }
   }
-
 }
