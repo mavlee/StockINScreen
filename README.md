@@ -1,10 +1,10 @@
-Finds the return of you and your connections for the companies that you have worked for.
+Stock screener with your usual options
+and also allows you to filter using LinkedIn things
 
-By looking up the historical stock value when you started and ended at each company,
-we can see if you provided value for your companies and if you are overall a productive
-employee.
+For example, find companies where you have friends working there
+so you have an inside edge
 
-In other words, we see how lucky you and your friends are, and if they've made it rich
+Find companies that will help you make monies
 
 to run:
 
