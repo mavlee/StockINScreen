@@ -20,7 +20,62 @@
       </div>
       <br/>
 
-      @for(friend <- friendsScores){
+<script type="text/javascript" language="JavaScript">  
+  function deleteapprove() { 
+    alert("It worked!");
+  }
+</script>
+
+
+      <div class="row">
+        <div class="span12">
+          <table class="table table-bordered stockdata hidden">
+            <thead></thead>
+            <tbody>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Price:</td>
+                <td>Min: <input type="text" name="minPrice"></td>
+                <td>Max: <input type="text" name="maxPrice"></td>
+              </tr>
+              <tr>
+                <td>Market Cap:</td>
+                <td>Min: <input type="text" name="minCap"></td>
+                <td>Max: <input type="text" name="maxCap"></td>
+              </tr>
+              <tr>
+                <td>P/E:</td>
+                <td>Min: <input type="text" name="minPE"></td>
+                <td>Max: <input type="text" name="maxPE"></td>
+              </tr>
+              <tr>
+                <td>Dividend:</td>
+                <td>Min: <input type="text" name="minDiv"></td>
+                <td>Max: <input type="text" name="maxDiv"></td>
+              </tr>
+              <tr>
+                <td>Number of Connections:</td>
+                <td>Min: <input type="text" name="minConns"></td>
+                <td>Max: <input type="text" name="maxConns"></td>
+              </tr>
+              <tr>
+                <td>In My Industry:</td>
+                <td><input type="checkbox" name="inMyIndustry" value="yes"></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <input type="button" value="Submit" onClick="doFilter"/>
+      </form>
+
+
+      <!-- @for(friend <- friendsScores){
       <div class="row">
         <div class="span12">
           <table class="table table-bordered stockdata hidden @friend._1 @friend._2">
@@ -76,7 +131,7 @@
       }
 
       <!-- FRIENDS -->
-      <div class="row">
+      <!--<div class="row">
         <div class="span12">
           <table class="table table-bordered master">
             <thead>
