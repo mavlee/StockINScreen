@@ -43,16 +43,15 @@ object Application extends Controller {
 
         //sort
         import scala.collection.JavaConversions._
-        connections.values = sampleFromList(connections.values, 50)
         connections.values = connections.values.sortWith((x,y) => x.firstName < y.firstName)
         val myProfile = gson.fromJson(profileData,classOf[Profile])
         connections.values = (myProfile :: connections.values.toList).toArray
-        val friendsFutures = connections.values.map{ friend => future{
+        connections.values.map{ friend => 
           val theirStocks = getPositions(friend.positions)
-
-        }}
+          theirStocks
+        }
         val map = Map.empty[String, (String, Double, Double, Double, Double, List[String])]
-        Ok(views.html.index.render(myProfile, map))
+        Ok(views.html.index.render(myProfile, List.empty[(String, String, Double, List[(String, String, Double, Double, Double)])]))
       }
       case _ =>{
         Logger.info("Redirecting to auth page")
@@ -63,27 +62,32 @@ object Application extends Controller {
 
 
   // invert map of companies people have worked for to map of people who have worked for companies
-
   def getPossibleStocks(peoples : Map[String, List[(String, String)]]):Map[String, (String, List[String])] = {
-    var CompanyToPeople = Map[(String,String),List[String]]()
+    //val companies = peoples.flatmap{i => i._2.map{j => j._1}}.toSet
+    var CompanyToPeople = scala.collection.mutable.Map[(String,String),List[String]]()
     peoples.map{i=> i._2.foreach{j=>if(!(CompanyToPeople contains j)) CompanyToPeople(j)=List[String](); CompanyToPeople(j)=CompanyToPeople(j)++List(i._1);}}
-    var companies = Map[String,(String,List[String])]()
+    var companies = scala.collection.mutable.Map[String,(String,List[String])]()
     CompanyToPeople.map{i=>companies+=((i._1._1,(i._1._2,i._2)))}
-    companies
+    companies.toMap
   }
 
-  def getPositions(positions: Any):List[(String, String, List[Int])] = {
+  def getPositions(positions: Any):List[(String, String, String)] = {
     import scala.collection.JavaConversions._
     if (positions==null||(!positions.asInstanceOf[java.util.LinkedHashMap[String, Any]].containsKey("values")))
-      List.empty[(String, String, List[Int])]
+      List.empty[(String, String, String)]
     else {
       var myPositions = positions.asInstanceOf[java.util.LinkedHashMap[String, Any]].get("values").asInstanceOf[java.util.ArrayList[java.util.HashMap[String, java.util.HashMap[String, Any]]]].toList
-      myPositions = myPositions.filter(_.get("company").containsKey("name")).filter(_.containsKey("startDate"))
+      myPositions = myPositions.filter(_.get("company").containsKey("name"))
+      myPositions = myPositions.filter(_.get("company").containsKey("ticker"))
+      myPositions = myPositions.filter(_.get("company").containsKey("industry"))
+      println("my posistions length %d".format(myPositions.size))
+      
       val stocks = myPositions.map{ p =>
         val ticker = if (p.get("company").containsKey("ticker")) p.get("company").get("ticker").toString else ""
         val companyName = p.get("company").get("name").toString
-        val industries = p.get("company").getOrElse("industries", new java.util.ArrayList[Integer]()).map(_.toInt).toList
-        (companyName.toString, ticker.toString, industries)
+        println(p.get("company").get("industry"))
+        val industry = p.get("company").get("industry").toString
+        (companyName, ticker, industry)
       }
       stocks
     }
@@ -149,7 +153,7 @@ object Application extends Controller {
   }
 
   def getProfileData(oauthService:OAuthService,accessToken:Token):Response = {
-    val fields = "(id,first-name,last-name,summary,industry,headline,picture-url,positions:(company:(name,ticker,industries),start-date,end-date))"
+    val fields = "(id,first-name,last-name,summary,industry,headline,picture-url,positions:(company:(name,ticker,industry),start-date,end-date))"
     val requestURL = "http://api.linkedin.com/v1/people/~:"+fields+"?format=json"
     val req = new OAuthRequest(Verb.GET, requestURL);
     val oauthService = getOauthService
@@ -158,7 +162,7 @@ object Application extends Controller {
   }
 
   def getConnectionData(oauthService:OAuthService,accessToken:Token):Response = {
-    val fields = "(id,first-name,last-name,summary,industry,headline,picture-url,positions:(company:(name,ticker,industries),start-date,end-date))"
+    val fields = "(id,first-name,last-name,summary,industry,headline,picture-url,positions:(company:(name,ticker,industry),start-date,end-date))"
     val requestURL = "http://api.linkedin.com/v1/people/~/connections:"+fields+"?format=json"
     val req = new OAuthRequest(Verb.GET, requestURL);
     oauthService.signRequest(accessToken, req);
