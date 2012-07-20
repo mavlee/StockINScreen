@@ -59,11 +59,6 @@ object Application extends Controller {
     }
   }
 
-  // ticker -> Name, Symbol, Price, Market Cap, P/E, Div
-  def getStockData(ticker: String) : (String, String, Double, Double, Double, Double) = {
-    null
-  }  
-
 
   // invert map of companies people have worked for to map of people who have worked for companies
   def getPossibleStocks(peoples : Map[String, List[(String, String)]]):Map[String, (String, List[String])] = {
@@ -164,10 +159,17 @@ object Application extends Controller {
   }
 
 
-  def getStockData(stock:String):Any = {
-    val url = "http://finance.yahoo.com/d/quotes.csv?s=%s&f=nsaj1rd".format(stock)
+  // ticker -> Name, Symbol, Price, Market Cap, P/E, Div
+  def getStockData(ticker: String) : (String, String, Double, Double, Double, Double) = {
+    import scala.collection.JavaConversions._
+    val url = "http://finance.yahoo.com/d/quotes.csv?s=%s&f=soj1rdn".format(ticker)
     val connection = new URL(url).openConnection
-    var lines = Source.fromInputStream(connection.getInputStream).getLines.head
+    val lines = Source.fromInputStream(connection.getInputStream).getLines.next
+    val fields = lines.split(",")
+    println(fields.toList)
+    println(fields(2))
+    val mrktCap = (if (fields(2).endsWith("B")) 1000 else 1) * fields(2).substring(0, fields(2).length-1).toDouble
+    (fields(5).mkString, fields(0).mkString, fields(1).toDouble, mrktCap, fields(3).toDouble, fields(4).toDouble)
   }
 
 }
