@@ -46,12 +46,12 @@ object Application extends Controller {
         connections.values = connections.values.sortWith((x,y) => x.firstName < y.firstName)
         val myProfile = gson.fromJson(profileData,classOf[Profile])
         connections.values = (myProfile :: connections.values.toList).toArray
-        connections.values.map{ friend => 
+        /*connections.values.map{ friend =>
           val theirStocks = getPositions(friend.positions)
           val tickers = theirStocks.map(_._2)
           val stockInfo = tickers.map(getStockData(_))
           stockInfo
-        }
+        }*/
         // Map(ticker, (company name, industry, price, mrktCap, p/e, div, Connections)
         val map = Map.empty[String, (String, String, Double, Double, Double, Double, List[String])]
         Ok(views.html.index.render(myProfile, List.empty[(String, String, Double, List[(String, String, Double, Double, Double)])]))
@@ -64,6 +64,11 @@ object Application extends Controller {
   }
 
 
+  def getStockInfoByTicker(values: Array[Any]): List[(String, String, String, Double, Double, Double, Double, List[String])]{
+        import scala.collection.
+
+
+  }
   // invert map of companies people have worked for to map of people who have worked for companies
   def getPossibleStocks(peoples : Map[String, List[(String, String)]]):Map[String, (String, List[String])] = {
     //val companies = peoples.flatmap{i => i._2.map{j => j._1}}.toSet
