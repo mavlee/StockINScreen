@@ -1,0 +1,53 @@
+@(data: (String, String, Double, List[(String, String, Double, Double, Double)]))
+<div class="row">
+  <div class="span12">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th colspan="4">@data._1 @data._2</th>
+        </tr>
+        <tr>
+          <th>Company</th>
+          <th>Ticker</th>
+          <th>Start Price</th>
+          <th>End Price</th>
+          <th>Percentage Change</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(stock <- data._4){
+          @if(stock._5 > 0) {
+            <tr class="positive">
+          } else {
+            @if(stock._5 < 0) {
+              <tr class="negative">
+            } else {
+              <tr>
+            }
+          }
+            <td>@stock._1</td>
+            <td>@stock._2</td>
+            <td>@stock._3</td>
+            <td>@stock._4</td>
+            <td>@stock._5%</td>
+          </tr>
+        }
+        @if(data._3 > 0) {
+          <tr class="positive">
+        } else {
+          @if(data._3 < 0) {
+            <tr class="negative">
+          } else {
+            <tr>
+          }
+        }
+          <td><strong>Total Percentage Change</strong></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td><strong>@data._3%</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

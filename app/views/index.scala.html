@@ -1,0 +1,109 @@
+@* @import views.tags.html._ *@
+@(profile: json.Profile, friendsScores: List[(String, String, Double, List[(String, String, Double, Double, Double)])])
+
+@main("Your Profile") {
+  @if(profile != null){
+    <div class="container" style="margin-top:10px">
+      <div class="row">
+        <div class="span12">
+          <h1>INStock</h1>
+        </div>
+      </div>
+      <div class="row">
+        <div class="span10">
+          <h2>@profile.firstName @profile.lastName</h1>
+          <h3>@profile.headline | @profile.industry</h2>
+        </div>
+        <div class="span2">
+          <img src="@profile.pictureUrl" />
+        </div>
+      </div>
+      <br/>
+
+      @for(friend <- friendsScores){
+      <div class="row">
+        <div class="span12">
+          <table class="table table-bordered stockdata hidden @friend._1 @friend._2">
+            <thead>
+              <tr>
+                <th colspan="4">@friend._1 @friend._2</th>
+              </tr>
+              <tr>
+                <th>Company</th>
+                <th>Ticker</th>
+                <th>Start Price</th>
+                <th>End Price</th>
+                <th>Percentage Change</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for(stock <- friend._4){
+                @if(stock._5 > 0) {
+                  <tr class="positive">
+                } else {
+                  @if(stock._5 < 0) {
+                    <tr class="negative">
+                  } else {
+                    <tr>
+                  }
+                }
+                  <td>@stock._1</td>
+                  <td>@stock._2</td>
+                  <td>@stock._3</td>
+                  <td>@stock._4</td>
+                  <td>@stock._5%</td>
+                </tr>
+              }
+              @if(friend._3 > 0) {
+                <tr class="positive">
+              } else {
+                @if(friend._3 < 0) {
+                  <tr class="negative">
+                } else {
+                  <tr>
+                }
+              }
+                <td><strong>Total Percentage Change</strong></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><strong>@friend._3%</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      }
+
+      <!-- FRIENDS -->
+      <div class="row">
+        <div class="span12">
+          <table class="table table-bordered master">
+            <thead>
+              <tr>
+                <th>Person</th>
+                <th>Percentage Change</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for(friend <- friendsScores){
+                @if(friend._3 > 0) {
+                  <tr class="positive">
+                } else {
+                  @if(friend._3 < 0) {
+                    <tr class="negative">
+                  } else {
+                    <tr>
+                  }
+                }
+                  <td>@friend._1 @friend._2</td>
+                  <td>@friend._3%</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  }
+}

@@ -1,0 +1,19 @@
+tr.positive {
+  background-color: #72BF37;
+}
+
+tr:hover.positive {
+  background-color: #47A101;
+}
+
+tr.negative {
+  background-color: #BF604B;
+}
+
+tr:hover.negative {
+  background-color: #A63C3C;
+}
+
+.hidden {
+  display: none;
+}
