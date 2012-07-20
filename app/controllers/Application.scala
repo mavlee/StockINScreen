@@ -47,14 +47,19 @@ object Application extends Controller {
         val myProfile = gson.fromJson(profileData,classOf[Profile])
         connections.values = (myProfile :: connections.values.toList).toArray
         connections.values.map{ friend => 
+          // connection name
+          val name = friend.firstName + " " + friend.lastName
+          // List (company name, ticker, industry)
           val theirStocks = getPositions(friend.positions)
+          // Lsit (ticker)
           val tickers = theirStocks.map(_._2)
+          // List (company name, ticker, price, mrktCap, p/e, div)
           val stockInfo = tickers.map(getStockData(_))
           stockInfo
         }
         // Map(ticker, (company name, industry, price, mrktCap, p/e, div, Connections)
-        val map = Map.empty[String, (String, String, Double, Double, Double, Double, List[String])]
-        Ok(views.html.index.render(myProfile, List.empty[(String, String, Double, List[(String, String, Double, Double, Double)])]))
+        val map = List.empty[(String, String, String, Double, Double, Double, Double, List[String])]
+        Ok(views.html.index.render(myProfile, map))
       }
       case _ =>{
         Logger.info("Redirecting to auth page")

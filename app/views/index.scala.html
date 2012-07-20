@@ -1,5 +1,5 @@
 @* @import views.tags.html._ *@
-@(profile: json.Profile, friendsScores: List[(String, String, Double, List[(String, String, Double, Double, Double)])])
+@(profile: json.Profile, stockResults: List[(String, String, String, Double, Double, Double, Double, List[String])])
 
 @main("Your Profile") {
   @if(profile != null){
