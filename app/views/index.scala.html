@@ -1,6 +1,7 @@
+@(profile: json.Profile, stockResults: List[(String, String, String, Double, Double, Double, Double, List[String])])
+
 @* @import views.tags.html._ *@
 @* List(ticker, (company name, industry, price, mrktCap, p/e, div, Connections) *@
-@(profile: json.Profile, stockResults: List[(String, String, String, Double, Double, Double, Double, List[String])])
 
 @main("Your Profile") {
   @if(profile != null){

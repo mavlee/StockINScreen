@@ -72,11 +72,11 @@ object Application extends Controller {
   }
 
 
-  def getStockInfoByTicker(values: Array[Any]): List[(String, String, String, Double, Double, Double, Double, List[String])]{
+  /*def getStockInfoByTicker(values: Array[Any]): List[(String, String, String, Double, Double, Double, Double, List[String])]{
         import scala.collection.
 
 
-  }
+  }*/
   // invert map of companies people have worked for to map of people who have worked for companies
   def getPossibleStocks(peoples : Map[String, List[(String, String)]]):Map[String, (String, List[String])] = {
     //val companies = peoples.flatmap{i => i._2.map{j => j._1}}.toSet
