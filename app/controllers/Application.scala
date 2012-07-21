@@ -49,7 +49,7 @@ object Application extends Controller {
 
 
 
-        connections.values.map{ friend => 
+       /* connections.values.map{ friend =>
           // connection name
           val name = friend.firstName + " " + friend.lastName
           // List (company name, ticker, industry)
@@ -59,9 +59,10 @@ object Application extends Controller {
           // List (company name, ticker, price, mrktCap, p/e, div)
           val stockInfo = tickers.map(getStockData(_))
           stockInfo
-        }
+        }*/
         // Map(ticker, (company name, industry, price, mrktCap, p/e, div, Connections)
-        val map = List.empty[(String, String, String, Double, Double, Double, Double, List[String])]
+        //val map = List.empty[(String, String, String, Double, Double, Double, Double, List[String])]
+        val map = getStockInfoByTicker(connections.values)
         Ok(views.html.index.render(myProfile, map))
       }
       case _ =>{
@@ -72,11 +73,21 @@ object Application extends Controller {
   }
 
 
-  /*def getStockInfoByTicker(values: Array[Any]): List[(String, String, String, Double, Double, Double, Double, List[String])]{
-        import scala.collection.
+  def getStockInfoByTicker(values: Array[json.Profile]): List[(String, String, String, Double, Double, Double, Double, List[String])]={
+    var peoples = scala.collection.mutable.Map[String,List[(String,String,String)]]()
+    values.toList.foldLeft(peoples)((p,v) => {
+      val name = v.firstName+" "+v.lastName;
+      val positions = getPositions(v.positions)
+      p+=((name,positions))})
+    val CompanyToPeople = getPossibleStocks(peoples.map(i=> (i._1,i._2.map(j=>(j._1,j._3)))).toMap)
+    val CompanyToTicker = peoples.flatMap(i=>i._2.map(j=>(j._1,j._2))).toSet.toMap
+    val StockInfo = CompanyToTicker.map(i=>(i._1,getStockData(i._2))).toMap
+    var StockList = scala.collection.mutable.MutableList[(String, String, String, Double, Double, Double, Double, List[String])]()
+    StockInfo.foldLeft(StockList)((s,i)=>s+=((CompanyToTicker(i._1),i._1,CompanyToPeople(i._1)._1,StockInfo(i._1)._3,StockInfo(i._1)._4,StockInfo(i._1)._5,StockInfo(i._1)._6,CompanyToPeople(i._1)._2)))
+    //StockList.foreach(i=>println("Mymap:"+i._1+" "+i._2+" "+i._3+" "+i._4+" "+i._5+" "+i._6+" "+i._7))
+    StockList.toList
+  }
 
-
-  }*/
   // invert map of companies people have worked for to map of people who have worked for companies
   def getPossibleStocks(peoples : Map[String, List[(String, String)]]):Map[String, (String, List[String])] = {
     //val companies = peoples.flatmap{i => i._2.map{j => j._1}}.toSet
