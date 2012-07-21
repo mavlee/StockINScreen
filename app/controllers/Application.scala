@@ -79,23 +79,23 @@ object Application extends Controller {
       val name = v.firstName+" "+v.lastName;
       val positions = getPositions(v.positions)
       p+=((name,positions))})
-    val CompanyToPeople = getPossibleStocks(peoples.map(i=> (i._1,i._2.map(j=>(j._1,j._3)))).toMap)
-    val CompanyToTicker = peoples.flatMap(i=>i._2.map(j=>(j._1,j._2))).toSet.toMap
-    val StockInfo = CompanyToTicker.map(i=>(i._1,getStockData(i._2))).toMap
-    var StockList = scala.collection.mutable.MutableList[(String, String, String, Double, Double, Double, Double, List[String])]()
-    StockInfo.foldLeft(StockList)((s,i)=>s+=((CompanyToTicker(i._1).toUpperCase,i._1,CompanyToPeople(i._1)._1,StockInfo(i._1)._3,StockInfo(i._1)._4,StockInfo(i._1)._5,StockInfo(i._1)._6,CompanyToPeople(i._1)._2)))
-    //StockList.foreach(i=>println("Mymap:"+i._1+" "+i._2+" "+i._3+" "+i._4+" "+i._5+" "+i._6+" "+i._7))
-    StockList.toList
+    val CompanyToPeople = getPossibleStocks(peoples.map(i=> (i._1,i._2.map(j=>(j._2.toUpperCase,j._3)))).toMap)
+    val CompanyToTicker = peoples.flatMap(i=>i._2.map(j=>(j._2,j._1))).toMap
+    val StockInfo = CompanyToTicker.map(i=>(i._1.toUpperCase,getStockData(i._1))).toMap
+    val stockList = StockInfo.toList.map{case (ticker:String, stockData:(String, String, Double, Double, Double, Double))=>(stockData._1, ticker, CompanyToPeople(ticker)._1, stockData._3, stockData._4, stockData._5,stockData._6, CompanyToPeople(ticker)._2)}
+    println(stockList)
+    stockList.toList.filter(_._4>0).sortWith((x,y)=>x._1 < y._1)
   }
 
   // invert map of companies people have worked for to map of people who have worked for companies
   def getPossibleStocks(peoples : Map[String, List[(String, String)]]):Map[String, (String, List[String])] = {
-    //val companies = peoples.flatmap{i => i._2.map{j => j._1}}.toSet
+    
+    
     var CompanyToPeople = scala.collection.mutable.Map[(String,String),List[String]]()
     peoples.map{i=> i._2.foreach{j=>if(!(CompanyToPeople contains j)) CompanyToPeople(j)=List[String](); CompanyToPeople(j)=CompanyToPeople(j)++List(i._1);}}
     var companies = scala.collection.mutable.Map[String,(String,List[String])]()
     CompanyToPeople.map{i=>companies+=((i._1._1,(i._1._2,i._2)))}
-    companies.toMap
+    companies.toMap.map{x=>(x._1, (x._2._1, x._2._2.toSet.toList))}
   }
 
   def getPositions(positions: Any):List[(String, String, String)] = {
@@ -201,7 +201,7 @@ object Application extends Controller {
   def getStockData(ticker: String) : (String, String, Double, Double, Double, Double) = {
     try {
       import scala.collection.JavaConversions._
-      val url = "http://finance.yahoo.com/d/quotes.csv?s=%s&f=soj1rdn".format(ticker)
+      val url = "http://finance.yahoo.com/d/quotes.csv?s=%s&f=soj1ryn".format(ticker)
       val connection = new URL(url).openConnection
       val lines = Source.fromInputStream(connection.getInputStream).getLines.next
       val fields = lines.split(",")
