@@ -83,7 +83,7 @@ object Application extends Controller {
     val CompanyToTicker = peoples.flatMap(i=>i._2.map(j=>(j._1,j._2))).toSet.toMap
     val StockInfo = CompanyToTicker.map(i=>(i._1,getStockData(i._2))).toMap
     var StockList = scala.collection.mutable.MutableList[(String, String, String, Double, Double, Double, Double, List[String])]()
-    StockInfo.foldLeft(StockList)((s,i)=>s+=((CompanyToTicker(i._1),i._1,CompanyToPeople(i._1)._1,StockInfo(i._1)._3,StockInfo(i._1)._4,StockInfo(i._1)._5,StockInfo(i._1)._6,CompanyToPeople(i._1)._2)))
+    StockInfo.foldLeft(StockList)((s,i)=>s+=((CompanyToTicker(i._1).toUpperCase,i._1,CompanyToPeople(i._1)._1,StockInfo(i._1)._3,StockInfo(i._1)._4,StockInfo(i._1)._5,StockInfo(i._1)._6,CompanyToPeople(i._1)._2)))
     //StockList.foreach(i=>println("Mymap:"+i._1+" "+i._2+" "+i._3+" "+i._4+" "+i._5+" "+i._6+" "+i._7))
     StockList.toList
   }
@@ -108,7 +108,7 @@ object Application extends Controller {
       myPositions = myPositions.filter(_.get("company").containsKey("ticker"))
       myPositions = myPositions.filter(_.get("company").containsKey("industry"))
       println("my posistions length %d".format(myPositions.size))
-      
+
       val stocks = myPositions.map{ p =>
         val ticker = if (p.get("company").containsKey("ticker")) p.get("company").get("ticker").toString else ""
         val companyName = p.get("company").get("name").toString
