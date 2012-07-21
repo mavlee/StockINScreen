@@ -74,6 +74,7 @@
           <table class="table table-bordered">
             <thead>
               <tr>
+                <th>Ticker</th>
                 <th>Company Name</th>
                 <th>Industry</th>
                 <th>Price</th>
@@ -93,6 +94,7 @@
                 <td>@e._5</td>
                 <td>@e._6</td>
                 <td>@e._7</td>
+                <td>@for(f <- e._8){@f,&nbsp;}</td>
               </tr>
             }
             </tbody>
