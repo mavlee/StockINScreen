@@ -27,10 +27,6 @@
         }
       </script>
 
-      @for(e <- stockResults){
-        <h1>e._1</h1>
-      }
-
       <div class="row">
         <div class="span12">
           <table class="table table-bordered stockdata hidden">
@@ -73,6 +69,37 @@
       </div>
 
       <input type="button" value="Submit" id="filterButton" onclick="doFilter()" />
+      <div class="row">
+        <div class="span12">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Company Name</th>
+                <th>Industry</th>
+                <th>Price</th>
+                <th>Market Cap</th>
+                <th>P/E</th>
+                <th>Dividends</th>
+                <th>Connections</th>
+              </tr>
+            </thead>
+            <tbody>
+            @for(e <- stockResults){
+              <tr>
+                <td>@e._1</td>
+                <td>@e._2</td>
+                <td>@e._3</td>
+                <td>@e._4</td>
+                <td>@e._5</td>
+                <td>@e._6</td>
+                <td>@e._7</td>
+              </tr>
+            }
+            </tbody>
+          </tbody>
+        </div>
+      </div>
+
 
     </div>
   }
