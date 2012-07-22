@@ -3,14 +3,14 @@
 @main("Your Profile") {
   @if(profile != null){
     <div class="container" style="margin-top:10px">
-      <div class="row">
+      <div id="type-title" class="row">
         <div class="span12">
           <h1>@profile.firstName @profile.lastName's Personal Stock Screener</h1>
         </div>
       </div>
-      <div class="row">
+      <div id="type-info" class="row">
         <div class="span10">
-          <h3>@profile.headline | @profile.industry</h2>
+          <h3>@profile.headline | <span class="profile-industry">@profile.industry</span></h2>
         </div>
         <div class="span2">
           <img src="@profile.pictureUrl" />
@@ -18,13 +18,7 @@
       </div>
       <br/>
 
-      <script language="javascript" type="text/javascript">
-        function doFilter() {
-          alert("It worked!");
-        }
-      </script>
-
-      <div class="row">
+      <div id="type-filter" class="row type-filter">
         <div class="span12">
           <table class="table table-bordered stockdata hidden">
             <thead>
@@ -35,37 +29,37 @@
             <tbody>
               <tr>
                 <td>Price:</td>
-                <td>Min: <input type="text" name="minPrice"></td>
-                <td>Max: <input type="text" name="maxPrice"></td>
+                <td>Min: <input type="text" name="minPrice" class="minPrice" val="0"></td>
+                <td>Max: <input type="text" name="maxPrice" class="maxPrice" val="125000"></td>
               </tr>
               <tr>
                 <td>Market Cap:</td>
-                <td>Min: <input type="text" name="minCap"></td>
-                <td>Max: <input type="text" name="maxCap"></td>
+                <td>Min: <input type="text" name="minCap" class="minCap" val="0"></td>
+                <td>Max: <input type="text" name="maxCap" class="maxCap" val="25000000000"></td>
               </tr>
               <tr>
                 <td>P/E:</td>
-                <td>Min: <input type="text" name="minPE"></td>
-                <td>Max: <input type="text" name="maxPE"></td>
+                <td>Min: <input type="text" name="minPE" class="minPE" val="0"></td>
+                <td>Max: <input type="text" name="maxPE" class="maxPE" val="2500"></td>
               </tr>
               <tr>
                 <td>Dividend:</td>
-                <td>Min: <input type="text" name="minDiv"></td>
-                <td>Max: <input type="text" name="maxDiv"></td>
+                <td>Min: <input type="text" name="minDiv" class="minDiv" val="0"></td>
+                <td>Max: <input type="text" name="maxDiv" class="maxDiv" val="100"></td>
               </tr>
               <tr>
                 <td>Number of Connections:</td>
-                <td>Min: <input type="text" name="minConns"></td>
-                <td>Max: <input type="text" name="maxConns"></td>
+                <td>Min: <input type="text" name="minConns" class="minConns" val="0"></td>
+                <td>Max: <input type="text" name="maxConns" class="maxConns" val="5000"></td>
               </tr>
               <tr>
                 <td>In My Industry:</td>
-                <td><input type="checkbox" name="inMyIndustry" value="yes"></td>
+                <td><input type="checkbox" name="inMyIndustry" class="inMyIndustry" value="yes"></td>
                 <td></td>
               </tr>
               <tr>
                 <td colspan="3">
-                  <input type="button" class="btn" value="Submit" id="filterButton" onclick="doFilter()" />
+                  <input type="button" class="btn filterButton" value="Apply" />
                 </td>
               </tr>
             </tbody>
@@ -78,8 +72,8 @@
           <table class="table table-bordered table-striped">
             <thead>
               <tr>
-                <th>Ticker</th>
                 <th>Company Name</th>
+                <th>Ticker</th>
                 <th>Industry</th>
                 <th>Price</th>
                 <th>Market Cap</th>
@@ -90,15 +84,15 @@
             </thead>
             <tbody>
             @for(e <- stockResults){
-              <tr>
-                <td>@e._1</td>
-                <td>@e._2</td>
-                <td>@e._3</td>
-                <td>@e._4</td>
-                <td>@e._5</td>
-                <td>@e._6</td>
-                <td>@e._7</td>
-                <td>@for(f <- e._8){@f,&nbsp;}</td>
+              <tr class="stockRecord">
+                <td><div class="name">@e._1</div></td>
+                <td><div class="ticker">@e._2</div></td>
+                <td><div class="industry">@e._3</div></td>
+                <td><div class="price">@e._4</div></td>
+                <td><div class="CAP">@e._5</div></td>
+                <td><div class="PE">@e._6</div></td>
+                <td><div class="DV">@e._7</div></td>
+                <td><div class="conns" data="@e._8.size">@for(f <- e._8){@f,&nbsp;}</div></td>
               </tr>
             }
             </tbody>
