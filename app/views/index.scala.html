@@ -92,7 +92,7 @@
                 <td><div class="CAP">@e._5</div></td>
                 <td><div class="PE">@e._6</div></td>
                 <td><div class="DV">@e._7</div></td>
-                <td><div class="conns" data="@e._8.size">@for(f <- e._8){@f,&nbsp;}</div></td>
+                <td><div class="conns" data="@e._8.size">@e._8.mkString(", ")</div></td>
               </tr>
             }
             </tbody>
